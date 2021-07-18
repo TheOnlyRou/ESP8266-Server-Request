@@ -13,14 +13,14 @@ const char* ssid     = "RouWiFi";
 const char* password = "MiserableLife";
 bool sensorVal = true;
 bool sensorVal2 = true;
-char* id[2]= {"00060012","00060011"};
+char* id[2]= {"00060011","00060012"};
  
 void setup () {
  
 Serial.begin(115200);
 pinMode(SENSOR, INPUT);
+pinMode(SENSOR2, INPUT);
 pinMode(ACTION, OUTPUT);
-pinMode(ACTION2, OUTPUT);
 Serial.print("Connecting to ");
 Serial.print(ssid);
 Serial.print(" ");
@@ -102,11 +102,9 @@ int L =digitalRead(SENSOR);// read the sensor
 int L2 = digitalRead(SENSOR2);  
   if(L == LOW){
     Serial.println("1: Obstacle detected");
-    digitalWrite(ACTION,HIGH);
     sensorVal= false;
   }else if (L == HIGH){
      Serial.println("1: All clear");
-     digitalWrite(ACTION,LOW);   
      sensorVal= true;
      }
   if(L2 ==LOW)
@@ -124,10 +122,10 @@ int L2 = digitalRead(SENSOR2);
     postDataToServer(i);
   if(WiFi.status()== WL_CONNECTED)
   {
-    digitalWrite(ACTION2,HIGH);
+    digitalWrite(ACTION,HIGH);
   }
   else{
-    digitalWrite(ACTION2,HIGH);    
+    digitalWrite(ACTION,HIGH);    
   }
 
   delay(5000);    //Send a request every 30 seconds
