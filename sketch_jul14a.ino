@@ -7,7 +7,6 @@
 #define SENSOR D1 
 #define SENSOR2 D6
 #define ACTION D2 
-#define ACTION2 D5 
  
 const char* ssid     = "RouWiFi";
 const char* password = "MiserableLife";
