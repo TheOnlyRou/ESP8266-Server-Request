@@ -5,14 +5,18 @@
 //#include <HTTPClient.h> // allows us to send HTTP requests using its methods
 
 #define SENSOR D1 
-#define SENSOR2 D6
-#define ACTION D2 
+#define SENSOR2 D2
+#define SENSOR3 D3
+#define SENSOR4 D4
+#define ACTION D6 
  
-const char* ssid     = "RouWiFi";
+const char* ssid     = "RouWifi";
 const char* password = "MiserableLife";
 bool sensorVal = true;
 bool sensorVal2 = true;
-char* id[2]= {"00060011","00060012"};
+bool sensorVal3 = true;
+bool sensorVal4 = true;
+char* id[4]= {"00060011","00060012", "00060013", "00060014"};
  
 void setup () {
  
@@ -44,7 +48,7 @@ void connectToWifi(){
     Serial.println(WiFi.localIP());
     Serial.print("MAC: ");
     Serial.println(WiFi.macAddress());
-    digitalWrite(ACTION2,HIGH);
+    digitalWrite(ACTION,HIGH);
     Serial.println();
   }
   else{
@@ -66,8 +70,12 @@ void postDataToServer(int i){
   doc["id"] = id[i];
   if(i == 0)
     doc["empty"] = sensorVal;
-  else
+  else if(i==1)
     doc["empty"] = sensorVal2;
+  else if(i==2)
+    doc["empty"] = sensorVal3;
+  else if(i==3)
+    doc["empty"] = sensorVal4;        
   String requestBody;
   serializeJson(doc, requestBody);
   Serial.println(requestBody);
@@ -99,6 +107,8 @@ void loop() {
  
 int L =digitalRead(SENSOR);// read the sensor 
 int L2 = digitalRead(SENSOR2);  
+int L3 = digitalRead(SENSOR3); 
+int L4 = digitalRead(SENSOR4); 
   if(L == LOW){
     Serial.println("1: Obstacle detected");
     sensorVal= false;
@@ -116,15 +126,35 @@ int L2 = digitalRead(SENSOR2);
     Serial.println("2: All clear");
     sensorVal2 = true;
   }
+  if(L3 ==LOW)
+    {
+      Serial.println("3: Obstacle detected");
+      sensorVal3 = false;
+    }
+  else if(L3 == HIGH)
+  {
+    Serial.println("3: All clear");
+    sensorVal3 = true;
+  }
+  if(L4 ==LOW)
+    {
+      Serial.println("4: Obstacle detected");
+      sensorVal4 = false;
+    }
+  else if(L4 == HIGH)
+  {
+    Serial.println("4: All clear");
+    sensorVal4 = true;
+  }    
   int i = 0;
-  for(i=0;i<2;i++)
+  for(i=0;i<4;i++)
     postDataToServer(i);
   if(WiFi.status()== WL_CONNECTED)
   {
     digitalWrite(ACTION,HIGH);
   }
   else{
-    digitalWrite(ACTION,HIGH);    
+    digitalWrite(ACTION,LOW);    
   }
 
   delay(5000);    //Send a request every 30 seconds
